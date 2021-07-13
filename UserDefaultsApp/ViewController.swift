@@ -13,19 +13,18 @@ class ViewController: UIViewController {
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var secondNameTextField: UITextField!
     
+    private var user = User()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        userNameLabel.isHidden = true
-        
-        if let userName = UserDefaults.standard.value(forKey: "userFullName") {
-            userNameLabel.isHidden = false
-            userNameLabel.text = userName as? String
-        }
+                
+        // user = StorageManager.shared.getUser() // декодируем данные из JSON
+        user = StorageManager.shared.getUserFromFile() // декодируем данные из plist файла
+        userNameLabel.text = "\(user.name) \(user.surname)"
     }
 
     @IBAction func donePressed() {
+        // проверяем не пустое ли поле и не равно ли nil
         guard let firstName = firstNameTextField.text, !(firstName.isEmpty) else {
             wrongFormatAlert()
             return
@@ -35,14 +34,18 @@ class ViewController: UIViewController {
             return
         }
         
+        // проверяем содержит ли поле цифры если нет берём объект из памяти
         if let _ = Double(firstName) {
             wrongFormatAlert()
         } else if let _ = Double(secondName) {
             wrongFormatAlert()
         } else {
-            userNameLabel.isHidden = false
             userNameLabel.text = firstName + " " + secondName
-            UserDefaults.standard.set(userNameLabel.text, forKey: "userFullName")
+            user.name = firstName
+            user.surname = secondName
+            // UserDefaults.standard.set(userNameLabel.text, forKey: "userFullName")
+            // StorageManager.shared.saveUser(user) // кодируем данные в JSON
+            StorageManager.shared.saveUserToFile(user) // кодируем данные в plist файла
         }
         
         
@@ -53,6 +56,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController {
+    // cоздаем UIAlert
     func wrongFormatAlert() {
         let alert = UIAlertController(title: "Wrong format",
                                       message: "Please enter your name",
