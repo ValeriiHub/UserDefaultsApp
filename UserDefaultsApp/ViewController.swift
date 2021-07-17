@@ -5,6 +5,10 @@
 //  Created by Valerii D on 12.07.2021.
 //
 
+// В данном уроке сохраняем данные через UserDefaults(по ключу String), UserDefaults(через JSON) и через plist файла
+
+
+
 import UIKit
 
 class ViewController: UIViewController {
@@ -18,8 +22,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        // user = StorageManager.shared.getUser() // декодируем данные из JSON
-        user = StorageManager.shared.getUserFromFile() // декодируем данные из plist файла
+/*        userNameLabel.isHidden = true
+        
+        if let userName = UserDefaults.standard.value(forKey: "userFullName") {           // восстанавливаем данные с UserDefaults
+            userNameLabel.isHidden = false
+            userNameLabel.text = userName as? String
+        }
+*/
+        
+        
+        // user = StorageManager.shared.getUser()                       // декодируем данные с помощью JSONDecoder 
+        user = StorageManager.shared.getUserFromFile()                  // декодируем данные из plist файла
         userNameLabel.text = "\(user.name) \(user.surname)"
     }
 
@@ -43,9 +56,9 @@ class ViewController: UIViewController {
             userNameLabel.text = firstName + " " + secondName
             user.name = firstName
             user.surname = secondName
-            // UserDefaults.standard.set(userNameLabel.text, forKey: "userFullName")
-            // StorageManager.shared.saveUser(user) // кодируем данные в JSON
-            StorageManager.shared.saveUserToFile(user) // кодируем данные в plist файла
+            // UserDefaults.standard.set(userNameLabel.text, forKey: "userFullName")        // сохраняем данные с помощью UserDefaults
+            // StorageManager.shared.saveUser(user)                                         // кодируем данные с помощью JSONEncoder
+            StorageManager.shared.saveUserToFile(user)                                      // кодируем данные в plist файла
         }
         
         
